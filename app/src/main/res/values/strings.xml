@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">VisualRecognition</string>
+    <string name="title_activity_result_screen">ResultScreen</string>
+</resources>
