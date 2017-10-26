@@ -2,6 +2,7 @@ package com.hackaton.cloudant.nosql;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cloudant.client.api.ClientBuilder;
@@ -26,6 +27,25 @@ public class CloudantConnector {
 	public List<String> getAllergens(){
 		Allergens allerges = CloudantConnector.getInstance().find(Allergens.class, "allergens");
 		return allerges.getName();
+	}
+	
+	public List<String> getIngridents(String foodName){
+		Food food = CloudantConnector.getInstance().find(Food.class, foodName);
+		return food.getIngredient();
+	}
+	
+	public List<String> getCrossAllergens(List<String> allergens){
+		List<String> crossAllergen = new ArrayList<String>();
+		if(allergens != null){
+			Database db = CloudantConnector.getInstance();
+			for (String allergen : allergens) {
+				CrossAllergen cross_allergens = db.find(CrossAllergen.class, allergen);
+				if(cross_allergens != null){
+					crossAllergen.addAll(cross_allergens.getCrossAllergen());
+				}
+			}
+		}
+		return crossAllergen;
 	}
 	
 	public static void main(String[] args) {
