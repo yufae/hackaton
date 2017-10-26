@@ -32,7 +32,7 @@ public class Result extends BaseActivity {
         Parcelable[] parcelables = getIntent().getParcelableArrayExtra("result");
 
         mFoodClass =  getFoodClass(parcelables);
-        if(mFoodClass != null || parcelables.length > 0){
+        if(mFoodClass != null /*|| parcelables.length > 0*/){
             goToFoodFound();
         }else{
             goToFoodNotFound();

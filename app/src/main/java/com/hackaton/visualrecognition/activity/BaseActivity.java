@@ -19,7 +19,13 @@ import java.util.Set;
 
 public class BaseActivity extends AppCompatActivity{
 
-    private static final String TAG = "Content Values";
+    protected static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    protected static final String TAG = "Content Values";
+
+    protected static final int REQUEST_ACTIVITY_CAMERA = 1000 ;
+    protected static final int REQUEST_ACTIVITY_RESULT= 1001 ;
+    protected static final int REQUEST_ACTIVITY_IMAGE_CAPTURE = 1002;
+    protected static final int REQUEST_ACTIVITY_CHATBOT = 1003;
 
     public List<String> getUserAllergens(){
 
@@ -34,8 +40,6 @@ public class BaseActivity extends AppCompatActivity{
         }
         return result;
     }
-
-
 
     public void saveUserAllergens(List<Allergen> allergenList){
 
@@ -58,6 +62,5 @@ public class BaseActivity extends AppCompatActivity{
             editor.putStringSet("allergenSet",allergensSet);
             editor.commit();
         }
-
     }
 }

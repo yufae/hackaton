@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hackaton.chatbot.activity.ChatActivity;
 import com.hackaton.cloudant.nosql.Allergen;
 import com.hackaton.cloudant.nosql.CloudantConnector;
 import com.hackaton.visualrecognition.R;
@@ -34,12 +35,6 @@ public class Profile extends BaseActivity {
 
 
 
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-    private static final String TAG = "Content Values";
-
-    private static final int REQUEST_ACTIVITY_CAMERA = 1000 ;
-    private static final int REQUEST_ACTIVITY_RESULT= 1001 ;
-
     private ArrayList<AlargenView> mAlergenList;
     private ArrayAdapter<AlargenView> mAlergenAdapter;
 
@@ -47,15 +42,16 @@ public class Profile extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        //internet permission
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-
+        //check camera
         if(!checkCameraRequested()){
             requestCamera();
         }else{
             //goToCameraActivity();
         }
-
+        //initialize elements
         intialize();
     }
 
@@ -72,10 +68,11 @@ public class Profile extends BaseActivity {
 
     private void intialize(){
 
+        //prepare save button
         initializeSaveButton();
-
+        //prepare alergen list view
         displayListView();
-
+        //populate alergens of the profile
         populateAllergens();
     }
 
@@ -84,7 +81,6 @@ public class Profile extends BaseActivity {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 onClickSaveButton();
             }
         });
@@ -113,8 +109,6 @@ public class Profile extends BaseActivity {
         // Assign adapter to ListView
         listView.setAdapter(mAlergenAdapter);
 
-
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
@@ -125,7 +119,6 @@ public class Profile extends BaseActivity {
                         Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
 
@@ -149,13 +142,18 @@ public class Profile extends BaseActivity {
         }
 
         saveUserAllergens(selectedAllergenList);
-        goToForward();
-
+        //goToForward();
+        goToForwardWıthImageCapture();
     }
 
     private void goToForward(){
         Intent intent  = new Intent(this, CameraActivity.class);
         startActivityForResult(intent, REQUEST_ACTIVITY_CAMERA);
+    }
+
+    private void goToForwardWıthImageCapture(){
+        Intent intent  = new Intent(this, ImageCaptureActivity.class);
+        startActivityForResult(intent, REQUEST_ACTIVITY_IMAGE_CAPTURE);
     }
 
     @Override
@@ -168,6 +166,9 @@ public class Profile extends BaseActivity {
             case REQUEST_ACTIVITY_RESULT:{
                 onReturnActivityResultScreen(resultCode, data);
             }
+            case REQUEST_ACTIVITY_IMAGE_CAPTURE:{
+                onReturnIMageCapture(resultCode, data);
+            }
         }
     }
 
@@ -179,15 +180,26 @@ public class Profile extends BaseActivity {
             }
         }
 
-        Intent resultScreenIntent = new Intent(this, Result.class);
-        resultScreenIntent.putExtra("result", result);
-        startActivityForResult(resultScreenIntent, REQUEST_ACTIVITY_RESULT);
-    }
 
+        if(result.length > 0){
+            Intent resultScreenIntent = new Intent(this, Result.class);
+            resultScreenIntent.putExtra("result", result);
+            startActivityForResult(resultScreenIntent, REQUEST_ACTIVITY_RESULT);
+        }else{
+            Intent chatBotIntent = new Intent(this, ChatActivity.class);
+            startActivityForResult(chatBotIntent, REQUEST_ACTIVITY_CHATBOT);
+        }
+    }
 
     private void onReturnActivityResultScreen(int resultCode, Intent data){
-        goToForward();
+        goToForwardWıthImageCapture();
     }
+
+    private void onReturnIMageCapture(int resultCode, Intent data){
+        //
+        onReturnActivityCamera(resultCode, data);
+    }
+
 
 
     //AllergenViewAdapter
