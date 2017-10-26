@@ -2,10 +2,10 @@ package com.hackaton.cloudant.nosql;
 
 import java.util.List;
 
-public class Allergens {
+public class RecentProfile {
 	private String _id;
 	private String _rev;
-	private List<Allergen> allergen_list;
+	private List<String> personalAllergens;
 
 	public String get_id() {
 		return _id;
@@ -23,12 +23,11 @@ public class Allergens {
 		this._rev = _rev;
 	}
 
-	public List<Allergen> getAllergen_list() {
-		return allergen_list;
+	public List<String> getPersonalAllergens() {
+		return personalAllergens;
 	}
 
-	public void setAllergen_list(List<Allergen> allergen_list) {
-		this.allergen_list = allergen_list;
+	public void setPersonalAllergens(List<String> personalAllergens) {
+		this.personalAllergens = personalAllergens;
 	}
-
 }

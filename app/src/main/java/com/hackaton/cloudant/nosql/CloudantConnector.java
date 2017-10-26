@@ -3,6 +3,7 @@ package com.hackaton.cloudant.nosql;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.cloudant.client.api.ClientBuilder;
@@ -24,9 +25,9 @@ public class CloudantConnector {
 		return db;
 	}
 	
-	public List<String> getAllergens(){
+	public List<Allergen> getAllergens(){
 		Allergens allerges = CloudantConnector.getInstance().find(Allergens.class, "allergens");
-		return allerges.getName();
+		return allerges.getAllergen_list();
 	}
 	
 	public List<String> getIngridents(String foodName){
@@ -48,6 +49,27 @@ public class CloudantConnector {
 		return crossAllergen;
 	}
 	
+	public static void saveRecentProfile(List<String> personalAllergens){
+		RecentProfile recentProfile = getRecentProfile();
+		if(recentProfile !=null){
+			CloudantConnector.getInstance().remove(recentProfile);
+		}
+		recentProfile = new RecentProfile();
+		recentProfile.set_id("RecentProfile");
+		recentProfile.setPersonalAllergens(personalAllergens);
+		CloudantConnector.getInstance().save(recentProfile);
+	}
+	
+	public static RecentProfile getRecentProfile(){
+		RecentProfile recentProfile = null;
+		try{
+			recentProfile = CloudantConnector.getInstance().find(RecentProfile.class, "RecentProfile");
+		} catch(Exception e){
+			System.out.println("No_data found!");
+		}
+		return recentProfile;
+	}
+	
 	public static void main(String[] args) {
 		try {
 			CloudantClient client = ClientBuilder.url(new URL(CLOUNDANT_URL)).build();
@@ -55,11 +77,17 @@ public class CloudantConnector {
 			
 			// Get Allergen List
 			Allergens all_allergens = db.find(Allergens.class, "allergens");
-			System.out.println(all_allergens.getName());
+			System.out.println(all_allergens.toString());
 			
 			// Get CrossAllergen of Shell Fish
 			CrossAllergen cross_allergens = db.find(CrossAllergen.class, "shell_fish");
 			System.out.println(cross_allergens.getCrossAllergen());
+			
+			getRecentProfile();
+			
+			saveRecentProfile(Arrays.asList("shell_fish", "tree_nut"));
+			
+			getRecentProfile();
 			
 			// Get Meat Ball Ingredient
 			Food food = db.find(Food.class, "meatball");
