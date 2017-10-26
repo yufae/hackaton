@@ -3,6 +3,7 @@ package com.hackaton.cloudant.nosql;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.cloudant.client.api.ClientBuilder;
@@ -69,11 +70,32 @@ public class CloudantConnector {
 		return recentProfile;
 	}
 	
+	public static List<Food> getFoodsByName(List<String> foodNameList){
+		List<Food> foodList = null;
+		if(foodNameList != null && !foodNameList.isEmpty()){
+			StringBuilder selectorJson = new StringBuilder("\"selector\": { \"$or\" :[ {\"food_name\": {\"$regex\" : ");
+			for (int i = 0; i < foodNameList.size(); i++) {
+				selectorJson.append("(?i)");
+				selectorJson.append(foodNameList.get(i).replaceAll(" ", "(?i)"));
+				selectorJson.append("}}");
+				if(i == foodNameList.size() - 1){
+					selectorJson.append("]}");
+				} else {
+					selectorJson.append(",{\"food_name\": {\"$regex\" : ");
+				}
+			}
+			Database db = CloudantConnector.getInstance();
+			foodList = db.findByIndex(selectorJson.toString(), Food.class);
+		}
+		return foodList;
+	}
+	
 	public static void main(String[] args) {
 		try {
+			
 			CloudantClient client = ClientBuilder.url(new URL(CLOUNDANT_URL)).build();
 			Database db = client.database(DB_NAME, true);
-			
+			/*
 			// Get Allergen List
 			Allergens all_allergens = db.find(Allergens.class, "allergens");
 			System.out.println(all_allergens.toString());
@@ -84,8 +106,10 @@ public class CloudantConnector {
 			
 			// Get Meat Ball Ingredient
 			Food food = db.find(Food.class, "meatball");
-			getIngridents("meatball");
 			System.out.println(food.getIngredient());
+			*/
+			List<Food> foodList = getFoodsByName(Arrays.asList("Calamary", "MeatBall"));
+			System.out.println(foodList);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
