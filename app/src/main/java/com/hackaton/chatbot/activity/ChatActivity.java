@@ -76,7 +76,7 @@ public class ChatActivity extends Activity {
 
     private void intialize() {
         this.messagesList = (MessagesList) findViewById(R.id.messagesList);
-        this.messagesAdapter = new MessagesListAdapter<Message>("chat", null);
+        this.messagesAdapter = new MessagesListAdapter<Message>("user", null);
         this.messagesList.setAdapter(this.messagesAdapter);
         this.messageInput = (MessageInput) findViewById(R.id.inputMessage);
         List<String> responses = CHAT_BOT.sendMessage("hi");
