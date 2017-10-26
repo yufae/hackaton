@@ -20,16 +20,11 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.CameraActivity" />
         <activity android:name=".activity.Result" />
-<<<<<<< HEAD
-        <activity android:name=".activity.Profile" />
-        <activity android:name="com.hackaton.chatbot.activity.ChatActivity">
-=======
-        <activity android:name=".activity.Profile">
 
-        </activity>
+        <activity android:name=".activity.Profile" />
+
         <activity android:name=".activity.ImageCaptureActivity"></activity>
         <activity android:name="com.hackaton.chatbot.activity.ChatActivity" >
->>>>>>> bbc82a355fd27784a3f0bc5857b00aa87c1e9e6e
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
