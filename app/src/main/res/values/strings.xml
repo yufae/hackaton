@@ -2,4 +2,6 @@
     <string name="app_name">VisualRecognition</string>
     <string name="title_activity_result_screen">ResultScreen</string>
     <string name="title_activity_profile">Profile</string>
+    <string name="title_item_list">Items</string>
+    <string name="title_item_detail">Item Detail</string>
 </resources>
