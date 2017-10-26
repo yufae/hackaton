@@ -10,9 +10,9 @@ public interface  ISelectable {
 
     public void setIsSelected(boolean check);
 
-    public String getId();
+    public String getCode();
 
-    public void setId(String id);
+    public void setCode(String id);
 
     public String getText();
 

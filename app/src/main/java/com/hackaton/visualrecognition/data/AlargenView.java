@@ -1,13 +1,13 @@
 package com.hackaton.visualrecognition.data;
 
-import com.hackaton.cloudant.nosql.Allergens;
+import com.hackaton.cloudant.nosql.Allergen;
 import com.hackaton.visualrecognition.comp.ISelectable;
 
 /**
  * Created by fatih.erol on 26.10.2017.
  */
 
-public class AlargenView extends Allergens implements ISelectable {
+public class AlargenView  implements ISelectable {
 
 
     public AlargenView (){
@@ -15,12 +15,19 @@ public class AlargenView extends Allergens implements ISelectable {
     }
 
     public AlargenView (String id, String name){
-        this.setId(id);
+        this.mAllergen = new Allergen();
+        this.setCode(id);
         this.setText(name);
     }
 
+    private Allergen mAllergen;
 
     private boolean mIselected;
+
+    public AlargenView(Allergen allergen) {
+        super();
+        this.mAllergen = allergen;
+    }
 
     @Override
     public boolean isSelected() {
@@ -32,27 +39,30 @@ public class AlargenView extends Allergens implements ISelectable {
         mIselected = check;
     }
 
-
     @Override
-    public String getId() {
-        return this.get_id();
+    public String getCode() {
+        return this.mAllergen.getId();
     }
 
     @Override
-    public void setId(String id) {
-        this.set_id(id);
+    public void setCode(String id) {
+        this.mAllergen.setId(id);
     }
-
-
 
     @Override
     public String getText() {
-        return this.getName().get(0);
+        return this.mAllergen.getName();
     }
 
     @Override
     public void setText(String text) {
-        this.getName().set(0, text);
+        this.mAllergen.setName(text);
     }
+
+
+    public Allergen getAllergen(){
+        return mAllergen;
+    }
+
 
 }

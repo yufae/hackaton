@@ -2,27 +2,31 @@ package com.hackaton.visualrecognition.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hackaton.cloudant.nosql.Allergen;
 import com.hackaton.cloudant.nosql.CloudantConnector;
 import com.hackaton.visualrecognition.R;
 import com.hackaton.visualrecognition.data.AlargenView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Profile extends AppCompatActivity {
+public class Profile extends BaseActivity {
 
 
+    private static final String TAG = "Content Values";
     private ArrayList<AlargenView> mAlergenList;
     private ArrayAdapter<AlargenView> mAlergenAdapter;
 
@@ -30,10 +34,30 @@ public class Profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        intialize();
     }
 
     private void intialize(){
+
+        initializeSaveButton();
+
         displayListView();
+
+        populateAllergens();
+    }
+
+    private void initializeSaveButton(){
+        Button buttonSave = (Button) findViewById(R.id.button_save);
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                onClickSaveButton();
+            }
+        });
     }
 
 
@@ -42,8 +66,14 @@ public class Profile extends AppCompatActivity {
         CloudantConnector connector = new CloudantConnector();
 
         mAlergenList = new ArrayList<AlargenView>();
-        for(String allergenName : connector.getAllergens()){
-            mAlergenList.add(new AlargenView(allergenName, allergenName));
+        List<Allergen> allergenList = null;
+        try{
+            allergenList = connector.getAllergens();
+        } catch(Exception e){
+            Log.d(TAG, "hata var "  + e.getMessage(), e);
+        }
+        for(Allergen allergen : allergenList){
+            mAlergenList.add(new AlargenView(allergen));
         }
 
         //create an ArrayAdaptar from the String Array
@@ -52,6 +82,7 @@ public class Profile extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.listView1);
         // Assign adapter to ListView
         listView.setAdapter(mAlergenAdapter);
+
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -68,7 +99,29 @@ public class Profile extends AppCompatActivity {
     }
 
 
+    private void populateAllergens(){
+        List<String> allergenList = getUserAllergens();
+        for (String allergenName : allergenList){
+            for(AlargenView allergenView : mAlergenList){
+                if(allergenView.getText().equalsIgnoreCase(allergenName)){
+                    allergenView.setIsSelected(true);
+                }
+            }
+        }
+    }
 
+    public void onClickSaveButton(){
+        List<Allergen> selectedAllergenList = new ArrayList<Allergen>();
+        for (AlargenView all : mAlergenList){
+            if(all.isSelected()){
+                selectedAllergenList.add(all.getAllergen());
+            }
+        }
+
+        saveUserAllergens(selectedAllergenList);
+
+
+    }
     //AllergenViewAdapter
     private class AllergenViewAdapter extends ArrayAdapter<AlargenView> {
 
@@ -77,8 +130,9 @@ public class Profile extends AppCompatActivity {
         public AllergenViewAdapter(Context context, int textViewResourceId,
                                ArrayList<AlargenView> allergenViewList) {
             super(context, textViewResourceId, allergenViewList);
-            this.mAllergenViewList = new ArrayList<AlargenView>();
-            this.mAllergenViewList.addAll(allergenViewList);
+            //this.mAllergenViewList = new ArrayList<AlargenView>();
+            //this.mAllergenViewList.addAll(allergenViewList);
+            this.mAllergenViewList = allergenViewList;
         }
 
         private class ViewHolder {
@@ -110,7 +164,7 @@ public class Profile extends AppCompatActivity {
                                 "Clicked on Checkbox: " + cb.getText() +
                                         " is " + cb.isChecked(),
                                 Toast.LENGTH_LONG).show();
-                        allergenView.setIsSelected(cb.isSelected());
+                        allergenView.setIsSelected(cb.isChecked());
                     }
                 });
             }
@@ -119,7 +173,7 @@ public class Profile extends AppCompatActivity {
             }
 
             AlargenView alargenView = mAllergenViewList.get(position);
-            holder.code.setText(" (" +  alargenView.getId() + ")");
+            holder.code.setText(" (" +  alargenView.getCode() + ")");
             holder.name.setText(alargenView.getText());
             holder.name.setChecked(alargenView.isSelected());
             holder.name.setTag(alargenView);
