@@ -127,6 +127,7 @@ public class CameraComponent {
 
 
 
+
     /** Check if this device has a camera */
     private boolean checkCameraHardware(Context context) {
         if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
