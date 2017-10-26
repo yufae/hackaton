@@ -29,7 +29,7 @@ public class CloudantConnector {
 		return allerges.getAllergen_list();
 	}
 	
-	public List<String> getIngridents(String foodName){
+	public static List<Ingredient> getIngridents(String foodName){
 		Food food = CloudantConnector.getInstance().find(Food.class, foodName);
 		return food.getIngredient();
 	}
@@ -84,6 +84,7 @@ public class CloudantConnector {
 			
 			// Get Meat Ball Ingredient
 			Food food = db.find(Food.class, "meatball");
+			getIngridents("meatball");
 			System.out.println(food.getIngredient());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
