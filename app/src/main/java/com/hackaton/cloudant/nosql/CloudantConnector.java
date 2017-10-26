@@ -1,13 +1,13 @@
 package com.hackaton.cloudant.nosql;
 
+import com.cloudant.client.api.ClientBuilder;
+import com.cloudant.client.api.CloudantClient;
+import com.cloudant.client.api.Database;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.cloudant.client.api.ClientBuilder;
-import com.cloudant.client.api.CloudantClient;
-import com.cloudant.client.api.Database;
 
 public class CloudantConnector {
 	private static final String CLOUNDANT_URL = "https://e399e3cb-1ba0-4550-9a86-04e5cb63a7f0-bluemix:2b8c16725df0248773581061deb76dfd7c0dbe26ff1ea183ab0d30fccdf5cc0a@e399e3cb-1ba0-4550-9a86-04e5cb63a7f0-bluemix.cloudant.com";
@@ -69,11 +69,32 @@ public class CloudantConnector {
 		return recentProfile;
 	}
 	
+	public List<Food> getFoodsByName(List<String> foodNameList){
+		List<Food> foodList = null;
+		if(foodNameList != null && !foodNameList.isEmpty()){
+			StringBuilder selectorJson = new StringBuilder("\"selector\": { \"$or\" :[ {\"food_name\": {\"$regex\" : ");
+			for (int i = 0; i < foodNameList.size(); i++) {
+				selectorJson.append("(?i)");
+				selectorJson.append(foodNameList.get(i).replaceAll(" ", "(?i)"));
+				selectorJson.append("}}");
+				if(i == foodNameList.size() - 1){
+					selectorJson.append("]}");
+				} else {
+					selectorJson.append(",{\"food_name\": {\"$regex\" : ");
+				}
+			}
+			Database db = CloudantConnector.getInstance();
+			foodList = db.findByIndex(selectorJson.toString(), Food.class);
+		}
+		return foodList;
+	}
+	
 	public static void main(String[] args) {
 		try {
+			
 			CloudantClient client = ClientBuilder.url(new URL(CLOUNDANT_URL)).build();
 			Database db = client.database(DB_NAME, true);
-			
+			/*
 			// Get Allergen List
 			Allergens all_allergens = db.find(Allergens.class, "allergens");
 			System.out.println(all_allergens.toString());
@@ -84,8 +105,8 @@ public class CloudantConnector {
 			
 			// Get Meat Ball Ingredient
 			Food food = db.find(Food.class, "meatball");
-			getIngridents("meatball");
 			System.out.println(food.getIngredient());
+			*/
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
