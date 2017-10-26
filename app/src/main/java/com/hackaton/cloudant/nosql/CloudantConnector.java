@@ -3,7 +3,6 @@ package com.hackaton.cloudant.nosql;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.cloudant.client.api.ClientBuilder;
@@ -35,12 +34,12 @@ public class CloudantConnector {
 		return food.getIngredient();
 	}
 	
-	public List<String> getCrossAllergens(List<String> allergens){
+	public List<String> getCrossAllergens(List<Allergen> allergens){
 		List<String> crossAllergen = new ArrayList<String>();
 		if(allergens != null){
 			Database db = CloudantConnector.getInstance();
-			for (String allergen : allergens) {
-				CrossAllergen cross_allergens = db.find(CrossAllergen.class, allergen);
+			for (Allergen allergen : allergens) {
+				CrossAllergen cross_allergens = db.find(CrossAllergen.class, allergen.getId());
 				if(cross_allergens != null){
 					crossAllergen.addAll(cross_allergens.getCrossAllergen());
 				}
@@ -82,12 +81,6 @@ public class CloudantConnector {
 			// Get CrossAllergen of Shell Fish
 			CrossAllergen cross_allergens = db.find(CrossAllergen.class, "shell_fish");
 			System.out.println(cross_allergens.getCrossAllergen());
-			
-			getRecentProfile();
-			
-			saveRecentProfile(Arrays.asList("shell_fish", "tree_nut"));
-			
-			getRecentProfile();
 			
 			// Get Meat Ball Ingredient
 			Food food = db.find(Food.class, "meatball");
