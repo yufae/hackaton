@@ -49,11 +49,11 @@ public class CameraActivity extends AppCompatActivity implements CameraComponent
             VisualRecognition service = new VisualRecognition(
                     VisualRecognition.VERSION_DATE_2016_05_20
             );
-            service.setApiKey("665df55ba39e577063f21b47280fe53e98cc5e86");
+            service.setApiKey("721bc58130a2e8f4b010394a3476f74aa30b79b1");
             ClassifyOptions classifyOptions = new ClassifyOptions.Builder()
                     .imagesFile(ioStream)
-                    .imagesFilename("kirmizi_kare.jpeg")
-                    //.parameters("{\"classifier_ids\": [\"hackaton_foods_906275859\"]}")
+                    .imagesFilename("food.jpeg")
+                    .parameters("{\"classifier_ids\": [\"Food_DB_1509108873\"]}")
                     .build();
 
             ClassifiedImages result = null;
@@ -71,8 +71,6 @@ public class CameraActivity extends AppCompatActivity implements CameraComponent
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
 
             List<Class> listClass = parseImageClassData(result);
             Parcelable[] arrClass = new Parcelable[listClass.size()];
@@ -111,25 +109,4 @@ public class CameraActivity extends AppCompatActivity implements CameraComponent
         }
         return inputStream;
     }
-
-
-
-
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        for( int i = 0; i < permissions.length; i++){
-            Log.e(TAG, permissions[i] + " " + grantResults[i]);
-        }
-    }*/
-
-   /* @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK){
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-        }
-    }*/
 }

@@ -11,16 +11,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ListView
+        <!--<ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/listView_scores">
 
         </ListView>
+
         <TextView
             android:id="@+id/textView_score"
             android:layout_width="match_parent"
-            android:layout_height="82dp" />
+            android:layout_height="82dp" />-->
+
+        <TextView
+            android:id="@+id/text_food"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_above="@+id/text_allergens"
+            android:textSize="60dp"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/text_allergens"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_above="@+id/image_ok"
+            android:textSize="60dp"
+            android:textAlignment="center"
+            />
+
+        <ImageView
+            android:id="@+id/image_ok"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
+
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

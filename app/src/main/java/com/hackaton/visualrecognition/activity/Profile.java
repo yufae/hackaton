@@ -1,8 +1,14 @@
 package com.hackaton.visualrecognition.activity;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.StrictMode;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +25,7 @@ import com.hackaton.cloudant.nosql.Allergen;
 import com.hackaton.cloudant.nosql.CloudantConnector;
 import com.hackaton.visualrecognition.R;
 import com.hackaton.visualrecognition.data.AlargenView;
+import com.hackaton.visualrecognition.data.Class;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +33,13 @@ import java.util.List;
 public class Profile extends BaseActivity {
 
 
+
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     private static final String TAG = "Content Values";
+
+    private static final int REQUEST_ACTIVITY_CAMERA = 1000 ;
+    private static final int REQUEST_ACTIVITY_RESULT= 1001 ;
+
     private ArrayList<AlargenView> mAlergenList;
     private ArrayAdapter<AlargenView> mAlergenAdapter;
 
@@ -37,7 +50,24 @@ public class Profile extends BaseActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        if(!checkCameraRequested()){
+            requestCamera();
+        }else{
+            //goToCameraActivity();
+        }
+
         intialize();
+    }
+
+    public boolean checkCameraRequested(){
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void requestCamera(){
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
     }
 
     private void intialize(){
@@ -103,7 +133,7 @@ public class Profile extends BaseActivity {
         List<String> allergenList = getUserAllergens();
         for (String allergenName : allergenList){
             for(AlargenView allergenView : mAlergenList){
-                if(allergenView.getText().equalsIgnoreCase(allergenName)){
+                if(allergenView.getCode().equalsIgnoreCase(allergenName)){
                     allergenView.setIsSelected(true);
                 }
             }
@@ -119,9 +149,47 @@ public class Profile extends BaseActivity {
         }
 
         saveUserAllergens(selectedAllergenList);
-
+        goToForward();
 
     }
+
+    private void goToForward(){
+        Intent intent  = new Intent(this, CameraActivity.class);
+        startActivityForResult(intent, REQUEST_ACTIVITY_CAMERA);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case REQUEST_ACTIVITY_CAMERA:{
+                onReturnActivityCamera(resultCode, data);
+            }
+            case REQUEST_ACTIVITY_RESULT:{
+                onReturnActivityResultScreen(resultCode, data);
+            }
+        }
+    }
+
+    private void onReturnActivityCamera(int resultCode, Intent data){
+        Parcelable[] result = data.getParcelableArrayExtra("result");
+        if(result != null){
+            for(Parcelable p : result){
+                Log.d(TAG, ((Class)p).getClassName());
+            }
+        }
+
+        Intent resultScreenIntent = new Intent(this, Result.class);
+        resultScreenIntent.putExtra("result", result);
+        startActivityForResult(resultScreenIntent, REQUEST_ACTIVITY_RESULT);
+    }
+
+
+    private void onReturnActivityResultScreen(int resultCode, Intent data){
+        goToForward();
+    }
+
+
     //AllergenViewAdapter
     private class AllergenViewAdapter extends ArrayAdapter<AlargenView> {
 
