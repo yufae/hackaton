@@ -29,9 +29,9 @@ public class CloudantConnector {
 		return allerges.getAllergen_list();
 	}
 	
-	public static List<Ingredient> getIngridents(String foodName){
+	public static Food getIngridents(String foodName){
 		Food food = CloudantConnector.getInstance().find(Food.class, foodName);
-		return food.getIngredient();
+		return food;
 	}
 	
 	public List<String> getCrossAllergens(List<Allergen> allergens){

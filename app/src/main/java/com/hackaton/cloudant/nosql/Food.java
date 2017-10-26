@@ -5,6 +5,7 @@ import java.util.List;
 public class Food {
 	private String _id;
 	private String _rev;
+	private String food_name;
 	private List<Ingredient> ingredient;
 
 	public String get_id() {
@@ -29,5 +30,13 @@ public class Food {
 
 	public void setIngredient(List<Ingredient> ingredient) {
 		this.ingredient = ingredient;
+	}
+
+	public String getFood_name() {
+		return food_name;
+	}
+
+	public void setFood_name(String food_name) {
+		this.food_name = food_name;
 	}
 }
