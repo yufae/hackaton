@@ -4,10 +4,8 @@ import android.util.Log;
 
 import com.hackaton.chatbot.activity.ChatActivity;
 import com.hackaton.cloudant.nosql.Food;
-import com.hackaton.visualrecognition.data.Class;
 import com.ibm.watson.developer_cloud.conversation.v1.Conversation;
 import com.ibm.watson.developer_cloud.conversation.v1.model.Context;
-import com.ibm.watson.developer_cloud.conversation.v1.model.GetDialogNodeOptions;
 import com.ibm.watson.developer_cloud.conversation.v1.model.InputData;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageOptions;
 import com.ibm.watson.developer_cloud.conversation.v1.model.MessageResponse;
@@ -104,7 +102,8 @@ public class ChatBot {
     // send keywords as ingredients
     public List<String> sendKeywords(List<Food> foods) {
         List<String> responses = new ArrayList<String>();
-        InputData.Builder input = new InputData.Builder(fixMessageinput("food"));
+
+        InputData.Builder input = new InputData.Builder(convertListToString(foods));
         MessageOptions.Builder optionsBuilder = new MessageOptions.Builder(WORKSPACE).input(input.build());
         String[] keywordStrings = new String[foods.size()];
 
@@ -112,6 +111,7 @@ public class ChatBot {
         for (int i = 0; i < foods.size(); i++) {
             foodNames[i] = foods.get(i).getFood_name();
         }
+
         if (context != null) {
             context.put("food", foodNames);
             optionsBuilder.context(context);
@@ -129,21 +129,34 @@ public class ChatBot {
             Log.i("ACN", "intent: " + intentName);
             if (intentName.equalsIgnoreCase("food")) {
                 ChatActivity.intentCaught = true;
-                return null;
+
             }
         }
         if (context == null)
             context = response.getContext();
 
-        if (!ChatActivity.intentCaught) {
+//        if (!ChatActivity.intentCaught) {
             List<String> responseMessages = response.getOutput().getText();
             for (String responseString : responseMessages)
-                responses.add(responseString);
-        }
+               responses.add(responseString);
+//        }
         return responses;
     }
 
     private String fixMessageinput(String message) {
         return message.trim();
     }
+
+    private String convertListToString(List<Food> foodList){
+        StringBuilder sb = new StringBuilder("");
+        for(Food f : foodList){
+            if(!sb.toString().equalsIgnoreCase("")){
+                sb.append(",");
+            }
+            sb.append(fixMessageinput(f.getFood_name()));
+        }
+        return sb.toString();
+    }
+
+
 }

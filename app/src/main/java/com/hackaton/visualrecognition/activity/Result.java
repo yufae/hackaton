@@ -38,9 +38,9 @@ public class Result extends BaseActivity {
             mFood = (Food) getIntent().getSerializableExtra("resultChat");
 
             if (!mFood.getDetectedAllergens().isEmpty()) {
-                foodName.setText(mFood.getFood_name());
+                foodName.setText("Food Name\n" + mFood.getFood_name());
                 resultImage.setImageResource(R.drawable.cross_img);
-                allergensName.setText(getAllergenNamesCommaFormat(mFood.getDetectedAllergens()));
+                allergensName.setText("Allergens\n" + getAllergenNamesCommaFormat(mFood.getDetectedAllergens()));
             } else {
                 resultImage.setImageResource(R.drawable.check_img);
                 allergensName.setText("Bon Appetit :)");

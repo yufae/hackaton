@@ -1,8 +1,6 @@
 package com.hackaton.chatbot.activity;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -16,7 +14,6 @@ import com.hackaton.cloudant.nosql.Ingredient;
 import com.hackaton.languageunderstanding.LanguageUnderstanding;
 import com.hackaton.visualrecognition.R;
 import com.hackaton.visualrecognition.activity.BaseActivity;
-import com.hackaton.visualrecognition.activity.Result;
 import com.hackaton.visualrecognition.data.Class;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
@@ -97,14 +94,14 @@ public class ChatActivity extends BaseActivity {
                         }
 
                         // go to resultactivity
-                        Intent resultIntent = new Intent(context, Result.class);
-                        Food resultFood = new Food();
-                        if (allergenNameList.size() >= 1) {
-                            resultFood = allergenNameList.get(0);
-                        }
-                        resultIntent.putExtra("resultChat", resultFood);
-                        setResult(Activity.RESULT_OK, resultIntent);
-                        startActivity(resultIntent);
+//                        Intent resultIntent = new Intent(context, Result.class);
+//                        Food resultFood = new Food();
+//                        if (allergenNameList.size() >= 1) {
+//                            resultFood = allergenNameList.get(0);
+//                        }
+//                        resultIntent.putExtra("resultChat", resultFood);
+//                        setResult(Activity.RESULT_OK, resultIntent);
+//                        startActivity(resultIntent);
                     }
                 }
                 return true;

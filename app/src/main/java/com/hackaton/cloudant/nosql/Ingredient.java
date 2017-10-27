@@ -1,6 +1,8 @@
 package com.hackaton.cloudant.nosql;
 
-public class Ingredient {
+import java.io.Serializable;
+
+public class Ingredient implements Serializable {
 	private String id;
 	private String name;
 
