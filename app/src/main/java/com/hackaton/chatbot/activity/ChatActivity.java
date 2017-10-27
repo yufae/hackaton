@@ -32,6 +32,7 @@ public class ChatActivity extends BaseActivity {
     private static final ChatBot BOT = ChatBot.getInstance();
     public static boolean categoryCaught = false;
     public static boolean intentCaught = false;
+    public static boolean intentGoodbye = false;
     private Context context;
 
     private static final float MIN_SCORE = 0.7f;
@@ -66,6 +67,11 @@ public class ChatActivity extends BaseActivity {
                 }
                 Log.i("ACN", "intentCaught = " + intentCaught);
 
+                if(intentGoodbye){
+                    finish();
+                }
+                intentGoodbye = false;
+
                 // intent is caught and natural language understanding process
                 if (intentCaught) {
                     LanguageUnderstanding languageUnderstanding = new LanguageUnderstanding();
@@ -86,12 +92,15 @@ public class ChatActivity extends BaseActivity {
                         // get allergens
                         List<Food> allergenNameList = findAllergens(keywordNames);
 
-                        // send foods
-                        List<String> keywordSendResults = BOT.sendKeywords(allergenNameList);
-                        for (String keywordSendResult : keywordSendResults) {
-                            Message keywordSendResultMessage = new Message("watson", CHATBOT, keywordSendResult);
-                            addMessage(keywordSendResultMessage);
-                        }
+                         // send foods
+                         List<String> keywordSendResults = BOT.sendKeywords(allergenNameList);
+                            for (String keywordSendResult : keywordSendResults) {
+                                Message keywordSendResultMessage = new Message("watson", CHATBOT, keywordSendResult);
+                                addMessage(keywordSendResultMessage);
+                         }
+
+
+
 
                         // go to resultactivity
 //                        Intent resultIntent = new Intent(context, Result.class);
@@ -104,6 +113,8 @@ public class ChatActivity extends BaseActivity {
 //                        startActivity(resultIntent);
                     }
                 }
+                intentCaught = false;
+                categoryCaught = false;
                 return true;
             }
         });

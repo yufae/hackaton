@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Result extends BaseActivity {
 
-    private static final float MAX_SCORE_TRESHOLD = 0.3f;
+    private static final float MAX_SCORE_TRESHOLD = 0.7f;
     ArrayAdapter<String> mArrayAdapter;
     Class mFoodClass;
     Food mFood;

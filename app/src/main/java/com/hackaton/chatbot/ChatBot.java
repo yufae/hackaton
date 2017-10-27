@@ -61,6 +61,10 @@ public class ChatBot {
                 ChatActivity.intentCaught = true;
                 return null;
             }
+            if (intentName.equalsIgnoreCase("goodbye")) {
+                ChatActivity.intentGoodbye = true;
+                return null;
+            }
         }
         if (context == null)
             context = response.getContext();
@@ -103,7 +107,7 @@ public class ChatBot {
     // send keywords as ingredients
     public List<String> sendKeywords(List<Food> foods) {
         List<String> responses = new ArrayList<String>();
-        InputData.Builder input = new InputData.Builder(convertListToString(foods));
+        InputData.Builder input = new InputData.Builder(foods.size() > 0?"meatball":"nonallergic");
         MessageOptions.Builder optionsBuilder = new MessageOptions.Builder(WORKSPACE).input(input.build());
         int matchIngCount = 0;
         for (Food f : foods) {
