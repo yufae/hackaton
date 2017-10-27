@@ -58,8 +58,9 @@ public class ImageCaptureActivity extends BaseActivity {
     private void onReturnIMageCapture(int resultCode, Intent data) {
 
         Bitmap imageBitmap = BitmapFactory.decodeFile(App._file.getAbsolutePath());
-        List<Class> listClass = VisualService.executeBitmap(imageBitmap);
+        imageBitmap = Bitmap.createScaledBitmap(imageBitmap,  imageBitmap.getWidth()/2, imageBitmap.getHeight()/2, false);
 
+        List<Class> listClass = VisualService.executeBitmap(imageBitmap);
         Parcelable[] arrClass = new Parcelable[listClass.size()];
         listClass.toArray(arrClass);
 

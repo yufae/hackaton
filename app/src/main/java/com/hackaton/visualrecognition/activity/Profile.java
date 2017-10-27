@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -217,7 +217,7 @@ public class Profile extends BaseActivity {
 
         private class ViewHolder {
             TextView code;
-            CheckBox name;
+            Switch name;
         }
 
         @Override
@@ -233,12 +233,12 @@ public class Profile extends BaseActivity {
 
                 holder = new ViewHolder();
                 holder.code = (TextView) convertView.findViewById(R.id.code);
-                holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
+                holder.name = (Switch) convertView.findViewById(R.id.checkBox1);
                 convertView.setTag(holder);
 
                 holder.name.setOnClickListener( new View.OnClickListener() {
                     public void onClick(View v) {
-                        CheckBox cb = (CheckBox) v ;
+                        Switch cb = (Switch) v ;
                         AlargenView allergenView = (AlargenView) cb.getTag();
                         Toast.makeText(getApplicationContext(),
                                 "Clicked on Checkbox: " + cb.getText() +
@@ -253,8 +253,8 @@ public class Profile extends BaseActivity {
             }
 
             AlargenView alargenView = mAllergenViewList.get(position);
-            holder.code.setText(" (" +  alargenView.getCode() + ")");
-            holder.name.setText(alargenView.getText());
+            holder.code.setText(alargenView.getText());
+            holder.name.setText("");
             holder.name.setChecked(alargenView.isSelected());
             holder.name.setTag(alargenView);
 

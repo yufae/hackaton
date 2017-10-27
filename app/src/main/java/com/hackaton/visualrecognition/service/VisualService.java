@@ -51,6 +51,7 @@ public class VisualService {
 
             //result.getImages().get(0).getClassifiers().get(0).getClasses().get(0);
             System.out.println(result);
+            Log.i(TAG, result.toString());
 
             try {
                 ioStream.close();
