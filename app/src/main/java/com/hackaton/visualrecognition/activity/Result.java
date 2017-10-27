@@ -100,10 +100,10 @@ public class Result extends BaseActivity {
 
     private void goToFoodFound() {
         List<Ingredient> allergenMatchedList = getMatchIngredientList();
-        foodName.setText(mFood.getFood_name());
+        foodName.setText("Food Name\n" + mFood.getFood_name());
         if (allergenMatchedList.size() > 0) {
             resultImage.setImageResource(R.drawable.cross_img);
-            allergensName.setText(getAllergenNamesCommaFormat(allergenMatchedList));
+            allergensName.setText("Allergens\n" + getAllergenNamesCommaFormat(allergenMatchedList));
         } else {
             resultImage.setImageResource(R.drawable.check_img);
             allergensName.setText("Bon Appetit :)");

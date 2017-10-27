@@ -20,15 +20,15 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.CameraActivity" />
         <activity android:name=".activity.Result" />
-
-        <activity android:name=".activity.Profile" />
-
-        <activity android:name=".activity.ImageCaptureActivity"></activity>
-        <activity android:name="com.hackaton.chatbot.activity.ChatActivity" >
+        <activity android:name=".activity.Profile">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".activity.ImageCaptureActivity"></activity>
+        <activity android:name="com.hackaton.chatbot.activity.ChatActivity" >
+
         </activity>
     </application>
 
