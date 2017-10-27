@@ -1,10 +1,11 @@
+
 package com.hackaton.cloudant.nosql;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Food implements Serializable{
+public class Food implements Serializable {
     private String _id;
     private String _rev;
     private String food_name;

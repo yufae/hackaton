@@ -91,7 +91,6 @@ public class ChatActivity extends BaseActivity {
                         for (String keywordSendResult : keywordSendResults) {
                             Message keywordSendResultMessage = new Message("watson", CHATBOT, keywordSendResult);
                             addMessage(keywordSendResultMessage);
-
                         }
 
                         // go to resultactivity

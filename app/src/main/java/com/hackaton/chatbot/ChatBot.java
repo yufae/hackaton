@@ -103,7 +103,6 @@ public class ChatBot {
     // send keywords as ingredients
     public List<String> sendKeywords(List<Food> foods) {
         List<String> responses = new ArrayList<String>();
-
         InputData.Builder input = new InputData.Builder(convertListToString(foods));
         MessageOptions.Builder optionsBuilder = new MessageOptions.Builder(WORKSPACE).input(input.build());
         int matchIngCount = 0;
@@ -123,7 +122,6 @@ public class ChatBot {
                 j++;
             }
         }
-
         int allIngCount = 0;
         for (Food f : foods) {
             for (Ingredient in : f.getIngredient()) {
@@ -139,14 +137,12 @@ public class ChatBot {
                 k++;
             }
         }
-
         if (context != null) {
             context.put("food", foodNames);
             context.put("ingredient", allIngs);
             context.put("allergens", matchedIng);
             optionsBuilder.context(context);
         }
-
         MessageOptions options = optionsBuilder.build();
         Log.i("CHATBOT", "Message: " + options.toString());
         MessageResponse response = this.service.message(options).execute();
@@ -165,11 +161,9 @@ public class ChatBot {
         if (context == null)
             context = response.getContext();
 
-//        if (!ChatActivity.intentCaught) {
         List<String> responseMessages = response.getOutput().getText();
         for (String responseString : responseMessages)
             responses.add(responseString);
-//        }
         return responses;
     }
 
@@ -187,6 +181,4 @@ public class ChatBot {
         }
         return sb.toString();
     }
-
-
 }
