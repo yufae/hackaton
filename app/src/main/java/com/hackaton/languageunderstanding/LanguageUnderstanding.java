@@ -3,6 +3,7 @@ package com.hackaton.languageunderstanding;
 import android.util.Log;
 
 import com.hackaton.chatbot.activity.ChatActivity;
+import com.hackaton.visualrecognition.data.Class;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.NaturalLanguageUnderstanding;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.AnalysisResults;
 import com.ibm.watson.developer_cloud.natural_language_understanding.v1.model.AnalyzeOptions;
@@ -24,8 +25,8 @@ public class LanguageUnderstanding {
         this.service = new NaturalLanguageUnderstanding(NaturalLanguageUnderstanding.VERSION_DATE_2017_02_27, USERNAME, PASSWORD);
     }
 
-    public List<String> getKeywords(String message) {
-        List<String> keywords = new ArrayList<String>();
+    public List<Class> getKeywords(String message) {
+        List<Class> keywords = new ArrayList<Class>();
         CategoriesOptions categoriesOptions = new CategoriesOptions();
         KeywordsOptions keywordsOptions = new KeywordsOptions.Builder().sentiment(true).build();
         Features features = new Features.Builder().keywords(keywordsOptions).categories(categoriesOptions).build();
@@ -34,18 +35,35 @@ public class LanguageUnderstanding {
         List<CategoriesResult> categoriesResults = analysisResults.getCategories();
         for (CategoriesResult categoriesResult : categoriesResults) {
             String categoryName = categoriesResult.getLabel();
+            categoryName = categoryName.replace("/", " ");
             Log.i("ACN", "category: " + categoryName);
             if (categoryName.contains("food") || categoryName.contains("drink")) {
                 ChatActivity.categoryCaught = true;
                 List<KeywordsResult> keywordsResults = analysisResults.getKeywords();
                 for (KeywordsResult keywordsResult : keywordsResults) {
                     String keywordName = keywordsResult.getText();
+                    keywordName = fixKeyword(keywordName);
+                    float keywordScore = keywordsResult.getRelevance().floatValue();
                     Log.i("ACN", "keyword: " + keywordName);
-                    keywords.add(keywordName);
+                    keywords.add(new Class(keywordName, keywordScore));
                 }
                 return keywords;
             }
         }
         return null;
+    }
+
+    // if single word multiply
+    private String fixMessage(String message) {
+        String[] words = message.split(" ");
+        if (words.length == 1) {
+            message = words[0] + " and " + words[0];
+        }
+        return message;
+    }
+
+    // replace "/"
+    private String fixKeyword(String keyword) {
+        return keyword.replace("/", " ");
     }
 }

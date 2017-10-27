@@ -17,25 +17,42 @@ import java.util.List;
 
 public class Result extends BaseActivity {
 
-    private static final float MAX_SCORE_TRESHOLD = 0.3f ;
+    private static final float MAX_SCORE_TRESHOLD = 0.3f;
     ArrayAdapter<String> mArrayAdapter;
     Class mFoodClass;
     Food mFood;
     String[] mArrayLabels;
+
+    ImageView resultImage;
+    TextView foodName;
+    TextView allergensName;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+        init();
 
-        Parcelable[] parcelables = getIntent().getParcelableArrayExtra("result");
+        if (getIntent().getSerializableExtra("resultChat") != null) {
+            mFood = (Food) getIntent().getSerializableExtra("resultChat");
 
-        mFoodClass =  getFoodClass(parcelables);
-        if(mFoodClass != null /*|| parcelables.length > 0*/){
-            goToFoodFound();
-        }else{
-            goToFoodNotFound();
+            if (!mFood.getDetectedAllergens().isEmpty()) {
+                foodName.setText(mFood.getFood_name());
+                resultImage.setImageResource(R.drawable.cross_img);
+                allergensName.setText(getAllergenNamesCommaFormat(mFood.getDetectedAllergens()));
+            } else {
+                resultImage.setImageResource(R.drawable.check_img);
+                allergensName.setText("Bon Appetit :)");
+            }
+        } else {
+            Parcelable[] parcelables = getIntent().getParcelableArrayExtra("result");
+            mFoodClass = getFoodClass(parcelables);
+            if (mFoodClass != null /*|| parcelables.length > 0*/) {
+                goToFoodFound();
+            } else {
+                goToFoodNotFound();
+            }
         }
 
         /*if(parcelables != null){
@@ -53,49 +70,50 @@ public class Result extends BaseActivity {
     }
 
 
-    private Class getFoodClass(Parcelable[] parcelables){
+    private Class getFoodClass(Parcelable[] parcelables) {
         Class foundClass = null;
 
-        if(parcelables.length == 0 ){
+        if (parcelables.length == 0) {
             return foundClass;
         }
 
         Class maxClass = (Class) parcelables[0];
         int i = 1;
-        for(i = 1; i < parcelables.length; i++){
-            if( maxClass.getScore() < ((Class)parcelables[i]).getScore()){
-                maxClass = (Class)parcelables[i];
+        for (i = 1; i < parcelables.length; i++) {
+            if (maxClass.getScore() < ((Class) parcelables[i]).getScore()) {
+                maxClass = (Class) parcelables[i];
             }
         }
 
-        if(((Class)parcelables[i-1]).getScore() > MAX_SCORE_TRESHOLD){
+        if (((Class) parcelables[i - 1]).getScore() > MAX_SCORE_TRESHOLD) {
             foundClass = maxClass;
         }
         return foundClass;
     }
 
+    private void init() {
+        this.resultImage = (ImageView) findViewById(R.id.image_ok);
+        this.foodName = (TextView) findViewById(R.id.text_food);
+        this.allergensName = (TextView) findViewById(R.id.text_allergens);
+    }
 
-    private void goToFoodFound(){
 
-        List<Ingredient> allergenMatchedList  = getMatchIngredientList();
-        ImageView resultImage = (ImageView) findViewById(R.id.image_ok);
-        TextView foodName = (TextView) findViewById(R.id.text_food);
-        TextView allergensName = (TextView) findViewById(R.id.text_allergens);
-
+    private void goToFoodFound() {
+        List<Ingredient> allergenMatchedList = getMatchIngredientList();
         foodName.setText(mFood.getFood_name());
-        if(allergenMatchedList.size() > 0){
+        if (allergenMatchedList.size() > 0) {
             resultImage.setImageResource(R.drawable.cross_img);
             allergensName.setText(getAllergenNamesCommaFormat(allergenMatchedList));
-        }else{
+        } else {
             resultImage.setImageResource(R.drawable.check_img);
             allergensName.setText("Bon Appetit :)");
         }
     }
 
-    private String getAllergenNamesCommaFormat(List<Ingredient> ingredientList){
+    private String getAllergenNamesCommaFormat(List<Ingredient> ingredientList) {
         StringBuffer sb = new StringBuffer("");
-        for(Ingredient i : ingredientList){
-            if(!sb.toString().equalsIgnoreCase("")){
+        for (Ingredient i : ingredientList) {
+            if (!sb.toString().equalsIgnoreCase("")) {
                 sb.append(",");
             }
             sb.append(i.getName());
@@ -107,18 +125,18 @@ public class Result extends BaseActivity {
     /*
 
      */
-    private List<Ingredient> getMatchIngredientList(){
+    private List<Ingredient> getMatchIngredientList() {
 
-        List<Ingredient> allergenMatchedList  = new ArrayList<Ingredient>();
+        List<Ingredient> allergenMatchedList = new ArrayList<Ingredient>();
 
         CloudantConnector cc = new CloudantConnector();
-        mFood  = cc.getIngridents( mFoodClass.getClassName());
+        mFood = cc.getIngridents(mFoodClass.getClassName());
         List<Ingredient> ingredientsList = mFood.getIngredient();
         List<String> allergensList = getUserAllergens();
 
-        for(Ingredient ingredient: ingredientsList) {
-            for(String allergen : allergensList){
-                if( ingredient.getId().equalsIgnoreCase(allergen)) {
+        for (Ingredient ingredient : ingredientsList) {
+            for (String allergen : allergensList) {
+                if (ingredient.getId().equalsIgnoreCase(allergen)) {
                     allergenMatchedList.add(ingredient);
                 }
             }
@@ -127,7 +145,7 @@ public class Result extends BaseActivity {
         return allergenMatchedList;
     }
 
-    private void goToFoodNotFound(){
+    private void goToFoodNotFound() {
 
         finish();
     }
