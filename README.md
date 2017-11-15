@@ -1,1 +1,1 @@
-# Haricot.AI Project for Accenture AI4Industries Hackathon 2017 
+# Haricot.AI Android Application Project for Accenture AI4Industries Hackathon 2017 
